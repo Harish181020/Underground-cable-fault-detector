@@ -1,0 +1,33 @@
+#include <LiquidCrystal.h>
+
+// LCD pins: RS, EN, D4, D5, D6, D7
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+
+const int cablePins[] = {A0, A1, A2}; // Simulate segments
+const int segmentLength = 10; // Distance in meters between points
+
+void setup() {
+  lcd.begin(16, 2);
+  Serial.begin(9600);
+  lcd.print("Cable Fault Det.");
+}
+
+void loop() {
+  for (int i = 0; i < 3; i++) {
+    int reading = analogRead(cablePins[i]);
+    if (reading < 300) { // Simulate fault threshold
+      int faultDistance = (i + 1) * segmentLength;
+      lcd.clear();
+      lcd.print("Fault at: ");
+      lcd.print(faultDistance);
+      lcd.print("m");
+      Serial.println("Fault detected at " + String(faultDistance) + "m");
+      delay(5000);
+      return;
+    }
+  }
+
+  lcd.clear();
+  lcd.print("No Fault Found");
+  delay(3000);
+}
